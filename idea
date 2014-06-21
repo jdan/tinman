@@ -1,0 +1,20 @@
+tinman init
+tinman new --with-templates
+tinman server
+tinman deploy
+tinman static
+
+var tinman = require('tinman');
+
+var server = tinman.createServer({
+  articles: 'posts',            // articles
+  public: 'www',                // public
+  layout: 'swagger.ejs'         // layout.ejs (maybe?)
+}, function (req, res) {
+  // not sure
+}).use(middleware())
+  .listen(3000);
+
+
+var app = express().use(tinman.middleware())
+
