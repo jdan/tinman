@@ -29,13 +29,15 @@ function Tinman(options) {
   this.renderPage = ejs.compile(this.layoutTemplate);
 
   this.articles = [];
+  this.indexPage = null;
 
   this.server = express();
   this.server.use(express.static(this.publicDir));
 
   async.series([
     this.loadArticles.bind(this),
-    this.routeArticles.bind(this)
+    this.loadIndexPage.bind(this),
+    this.configRoutes.bind(this)
   ], function (err) {
     if (err) throw err;
   });
@@ -88,6 +90,7 @@ Tinman.prototype.renderArticle = function (file) {
       /* Render the markdown of the body */
       article.title = article.title || 'Untitled';
       article.body = marked(parsedArticle.body);
+      article.location = article.location || '/' + article.basename;
 
       /* Render the article with the template and layout */
       article.render = self.renderPage({
@@ -100,8 +103,21 @@ Tinman.prototype.renderArticle = function (file) {
   };
 };
 
-Tinman.prototype.routeArticles = function (callback) {
+Tinman.prototype.loadIndexPage = function (callback) {
+  this.indexPage = this.renderPage({
+    body: ejs.render(this.indexTemplate, { articles: this.articles })
+  });
+
+  callback();
+};
+
+Tinman.prototype.configRoutes = function (callback) {
   var i, self = this;
+
+  /* Configure index route */
+  this.server.get('/', function (req, res) {
+    res.send(self.indexPage);
+  });
 
   for (i = 0; i < this.articles.length; i++) {
     (function (article) {
@@ -111,8 +127,7 @@ Tinman.prototype.routeArticles = function (callback) {
        * Set the route as either the articles "location" property, or as its
        * basename (filename without extension)
        */
-      var route = article.location || '/' + article.basename;
-      self.server.get(route, function (req, res) {
+      self.server.get(article.location, function (req, res) {
         /* Render the article template */
         res.send(article.render);
       });
