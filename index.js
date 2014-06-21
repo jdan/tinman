@@ -6,6 +6,7 @@ var ejs = require('ejs');
 var express = require('express');
 var fm = require('front-matter');
 var marked = require('marked');
+var mkdirp = require('mkdirp');
 
 function Tinman(options) {
   options = options || {};
@@ -35,15 +36,8 @@ function Tinman(options) {
 
   this.server = express();
   this.server.use(express.static(this.publicDir));
-
-  async.series([
-    this.loadArticles.bind(this),
-    this.loadIndexPage.bind(this),
-    this.configRoutes.bind(this)
-  ], function (err) {
-    if (err) throw err;
-  });
 }
+
 
 Tinman.DEFAULTS = {
   directory: '.',
@@ -54,6 +48,25 @@ Tinman.DEFAULTS = {
   index: path.join(__dirname, 'templates/index.ejs')
 };
 
+
+/**
+ * Run the tinman instance
+ * - load the articles from a user-specified location
+ * - generate the index page
+ * - configure the routes for the express server
+ */
+Tinman.prototype.run = function (callback) {
+  return async.series([
+    this.loadArticles.bind(this),
+    this.loadIndexPage.bind(this),
+    this.configRoutes.bind(this)
+  ], callback);
+};
+
+
+/**
+ * Load the articles from the user-specified direction, and render them
+ */
 Tinman.prototype.loadArticles = function (callback) {
   var self = this;
 
@@ -69,6 +82,10 @@ Tinman.prototype.loadArticles = function (callback) {
   });
 };
 
+
+/**
+ * Render an article specified by a file path
+ */
 Tinman.prototype.renderArticle = function (file) {
   var self = this;
 
@@ -106,6 +123,10 @@ Tinman.prototype.renderArticle = function (file) {
   };
 };
 
+
+/**
+ * Render the index page
+ */
 Tinman.prototype.loadIndexPage = function (callback) {
   this.indexPage = this.renderPage({
     body: ejs.render(this.indexTemplate, { articles: this.articles })
@@ -114,6 +135,10 @@ Tinman.prototype.loadIndexPage = function (callback) {
   callback();
 };
 
+
+/**
+ * Configure the routes to the index page and each article
+ */
 Tinman.prototype.configRoutes = function (callback) {
   var i, self = this;
 
@@ -142,10 +167,73 @@ Tinman.prototype.configRoutes = function (callback) {
   return callback();
 };
 
+
+/**
+ * Export the blog as a static site
+ */
+Tinman.prototype.export = function (destination, callback) {
+  var self = this, ops = [];
+  destination = destination || 'build';
+
+  /* Create the destination direction */
+  mkdirp(destination, function (err) {
+    if (err) return callback(err);
+
+    /* Push an operation to write the index page */
+    ops.push(function (callback) {
+      fs.writeFile(path.join(destination, 'index.html'), self.indexPage, callback);
+    });
+
+    /* Write the public directory */
+
+    /* Push an operation to write each artle in parallel */
+    self.articles.forEach(function (article) {
+      ops.push(self.exportArticle(destination, article));
+    });
+
+    return async.parallel(ops, callback);
+  });
+};
+
+
+/**
+ * Returns a function to export an article to a given destination
+ */
+Tinman.prototype.exportArticle = function (destination, article) {
+  return function (callback) {
+    var articlePath = path.join(destination, article.location);
+    /* Create the path for the article */
+    mkdirp(articlePath, function (err) {
+      if (err) return callback(err);
+
+      /* Write index.html to the directory identifying the article */
+      fs.writeFile(path.join(articlePath, 'index.html'), article.render, callback);
+    });
+  };
+};
+
+
+/**
+ * Create and return an express web server
+ */
 exports.createServer = function (options) {
-  /* Create a new Tinman instance */
-  var instance = new Tinman(options);
+  /* Create a new Tinman instance and run it */
+  var instance = new Tinman(options).run();
 
   /* Return the express server */
   return instance.server;
+};
+
+
+/**
+ * Generate a static site to a given destination
+ */
+exports.build = function (options, destination) {
+  var instance = new Tinman(options);
+
+  instance.run(function () {
+    return instance.export(destination, function (err) {
+      if (err) throw err;
+    });
+  });
 };
