@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
 var tinman = require('../')
-tinman.createServer().listen(3000)
+tinman.createServer({ directory: process.argv[2] }).listen(3000)

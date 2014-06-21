@@ -8,13 +8,15 @@ var fm = require('front-matter');
 var marked = require('marked');
 
 function Tinman(options) {
+  options = options || {};
   for (var prop in Tinman.DEFAULTS) {
     /* Won't work for a falsey option */
     options[prop] = options[prop] || Tinman.DEFAULTS[prop];
   }
 
-  this.articlesDir = options.articles;
-  this.publicDir = options.public;
+  this.directory = path.resolve(options.directory);
+  this.articlesDir = path.join(this.directory, options.articles);
+  this.publicDir = path.join(this.directory, options.public);
 
   this.layoutTemplate = fs.readFileSync(options.layout, 'utf-8');
   this.articleTemplate = fs.readFileSync(options.template, 'utf-8');
@@ -44,6 +46,7 @@ function Tinman(options) {
 }
 
 Tinman.DEFAULTS = {
+  directory: '.',
   articles: 'articles',
   public: 'public',
   layout: path.join(__dirname, 'templates/layout.ejs'),
@@ -126,6 +129,8 @@ Tinman.prototype.configRoutes = function (callback) {
       /**
        * Set the route as either the articles "location" property, or as its
        * basename (filename without extension)
+       *
+       * TODO: json endpoint
        */
       self.server.get(article.location, function (req, res) {
         /* Render the article template */
