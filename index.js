@@ -22,11 +22,9 @@ function Tinman(options) {
 
   /* Directory and full path to articles */
   this.articlesDir = options.articles;
-  this.articlesPath = path.join(this.directory, this.articlesDir);
 
   /* Directory and full path to public files */
   this.publicDir = options.public;
-  this.publicPath = path.join(this.directory, this.publicDir);
 
   this.layoutTemplate = fs.readFileSync(options.layout, 'utf-8');
   this.articleTemplate = fs.readFileSync(options.template, 'utf-8');
@@ -85,8 +83,8 @@ Tinman.prototype.generateResourceTags = function (callback) {
   var styles = [];
   var scripts = [];
 
-  var styleGlob = path.join(this.publicPath, '**', '*.css');
-  var scriptGlob = path.join(this.publicPath, '**', '*.js');
+  var styleGlob = path.join(this.directory, this.publicDir, '**', '*.css');
+  var scriptGlob = path.join(this.directory, this.publicDir, '**', '*.js');
 
   var stream = gs.create([styleGlob, scriptGlob]);
   stream.on('data', function (file) {
@@ -126,8 +124,8 @@ Tinman.prototype.generateResourceTags = function (callback) {
  */
 Tinman.prototype.loadArticles = function (callback) {
   var self = this;
-
-  fs.readdir(this.articlesPath, function (err, files) {
+  var fullPath = path.join(this.directory, this.articlesDir);
+  fs.readdir(fullPath, function (err, files) {
     if (err) return callback(err);
     var i, ops = [];
 
@@ -147,7 +145,7 @@ Tinman.prototype.renderArticle = function (file) {
   var self = this;
 
   return function (callback) {
-    var filePath = path.join(self.articlesPath, file);
+    var filePath = path.join(self.directory, self.articlesDir, file);
 
     fs.readFile(filePath, function (err, data) {
       if (err) return callback(err);
@@ -200,7 +198,7 @@ Tinman.prototype.configRoutes = function (callback) {
   var i, self = this;
 
   /* Use the static middleware on the specified public directory */
-  this.server.use(express.static(this.publicPath));
+  this.server.use(express.static(path.join(this.directory, this.publicDir)));
 
   /* Configure index route */
   this.server.get('/', function (req, res) {
@@ -246,7 +244,7 @@ Tinman.prototype.export = function (destination, callback) {
 
     /* Write the public directory */
     ops.push(function (callback) {
-      ncp(self.publicPath, destination, callback);
+      ncp(path.join(self.directory, self.publicDir), destination, callback);
     });
 
     /* Push an operation to write each artle in parallel */
@@ -281,7 +279,8 @@ Tinman.prototype.exportArticle = function (destination, article) {
  */
 exports.createServer = function (options) {
   /* Create a new Tinman instance and run it */
-  var instance = new Tinman(options).run();
+  var instance = new Tinman(options);
+  instance.run();
 
   /* Return the express server */
   return instance.server;
