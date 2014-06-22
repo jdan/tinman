@@ -7,6 +7,7 @@ var express = require('express');
 var fm = require('front-matter');
 var marked = require('marked');
 var mkdirp = require('mkdirp');
+var ncp = require('ncp');
 
 function Tinman(options) {
   options = options || {};
@@ -16,8 +17,14 @@ function Tinman(options) {
   }
 
   this.directory = path.resolve(options.directory);
-  this.articlesDir = path.join(this.directory, options.articles);
-  this.publicDir = path.join(this.directory, options.public);
+
+  /* Directory and full path to articles */
+  this.articlesDir = options.articles;
+  this.articlesPath = path.join(this.directory, this.articlesDir);
+
+  /* Directory and full path to public files */
+  this.publicDir = options.public;
+  this.publicPath = path.join(this.directory, this.publicDir);
 
   this.layoutTemplate = fs.readFileSync(options.layout, 'utf-8');
   this.articleTemplate = fs.readFileSync(options.template, 'utf-8');
@@ -35,7 +42,7 @@ function Tinman(options) {
   this.indexPage = null;
 
   this.server = express();
-  this.server.use(express.static(this.publicDir));
+  this.server.use(express.static(this.publicPath));
 }
 
 
@@ -70,7 +77,7 @@ Tinman.prototype.run = function (callback) {
 Tinman.prototype.loadArticles = function (callback) {
   var self = this;
 
-  fs.readdir(this.articlesDir, function (err, files) {
+  fs.readdir(this.articlesPath, function (err, files) {
     if (err) return callback(err);
     var i, ops = [];
 
@@ -90,7 +97,7 @@ Tinman.prototype.renderArticle = function (file) {
   var self = this;
 
   return function (callback) {
-    var filePath = path.join(self.articlesDir, file);
+    var filePath = path.join(self.articlesPath, file);
 
     fs.readFile(filePath, function (err, data) {
       if (err) return callback(err);
@@ -185,6 +192,9 @@ Tinman.prototype.export = function (destination, callback) {
     });
 
     /* Write the public directory */
+    ops.push(function (callback) {
+      ncp(self.publicPath, path.join(destination, self.publicDir), callback);
+    });
 
     /* Push an operation to write each artle in parallel */
     self.articles.forEach(function (article) {
