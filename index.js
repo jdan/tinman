@@ -5,6 +5,7 @@ var async = require('async');
 var ejs = require('ejs');
 var express = require('express');
 var fm = require('front-matter');
+var gs = require('glob-stream');
 var marked = require('marked');
 var mkdirp = require('mkdirp');
 var ncp = require('ncp');
@@ -16,6 +17,7 @@ function Tinman(options) {
     options[prop] = options[prop] || Tinman.DEFAULTS[prop];
   }
 
+  this.title = options.title;
   this.directory = path.resolve(options.directory);
 
   /* Directory and full path to articles */
@@ -31,22 +33,19 @@ function Tinman(options) {
   this.indexTemplate = fs.readFileSync(options.index, 'utf-8');
 
   /**
-   * Create a render function that places a given `body` into the layout
-   * template.
-   *
-   * TODO: Pre-render CSS and JS includes
+   * Define some instance variables:
+   * - an array of article objects
+   * - the HTML content of the index page
+   * - the express server
    */
-  this.renderPage = ejs.compile(this.layoutTemplate);
-
   this.articles = [];
   this.indexPage = null;
-
   this.server = express();
-  this.server.use(express.static(this.publicPath));
 }
 
 
 Tinman.DEFAULTS = {
+  title: 'My Blog',
   directory: '.',
   articles: 'articles',
   public: 'public',
@@ -58,16 +57,67 @@ Tinman.DEFAULTS = {
 
 /**
  * Run the tinman instance
- * - load the articles from a user-specified location
- * - generate the index page
- * - configure the routes for the express server
  */
 Tinman.prototype.run = function (callback) {
   return async.series([
+    /* Generate CSS and JS tags for the main layout */
+    this.generateResourceTags.bind(this),
+
+    /* Load and render the articles */
     this.loadArticles.bind(this),
+
+    /* Render the index page */
     this.loadIndexPage.bind(this),
+
+    /* Configure the routes for the express server */
     this.configRoutes.bind(this)
   ], callback);
+};
+
+
+/**
+ * Generates CSS and JS tags based on files located in the specified
+ * public directory. Then we build a render method to place any content
+ * into our main layout.
+ */
+Tinman.prototype.generateResourceTags = function (callback) {
+  var self = this;
+  var styles = [];
+  var scripts = [];
+
+  var styleGlob = path.join(this.publicPath, '**', '*.css');
+  var scriptGlob = path.join(this.publicPath, '**', '*.js');
+
+  var stream = gs.create([styleGlob, scriptGlob]);
+  stream.on('data', function (file) {
+    var relative = path.relative(file.base, file.path);
+
+    if (path.extname(file.path) === '.js') {
+      scripts.push(relative);
+    } else if (path.extname(file.path) === '.css') {
+      styles.push(relative);
+    }
+  });
+
+  stream.on('end', function () {
+    scripts = scripts.map(function (asset) {
+      return '<script src="/' + asset + '"></script>';
+    });
+
+    styles = styles.map(function (asset) {
+      return '<link rel="stylesheet" href="/' + asset + '">';
+    });
+
+    self.renderPage = function (options) {
+      options.title = self.title;
+      options.stylesheets = styles.join('\n');
+      options.scripts = scripts.join('\n');
+
+      return ejs.render(self.layoutTemplate, options);
+    };
+
+    callback();
+  });
 };
 
 
@@ -149,6 +199,9 @@ Tinman.prototype.loadIndexPage = function (callback) {
 Tinman.prototype.configRoutes = function (callback) {
   var i, self = this;
 
+  /* Use the static middleware on the specified public directory */
+  this.server.use(express.static(this.publicPath));
+
   /* Configure index route */
   this.server.get('/', function (req, res) {
     res.send(self.indexPage);
@@ -193,7 +246,7 @@ Tinman.prototype.export = function (destination, callback) {
 
     /* Write the public directory */
     ops.push(function (callback) {
-      ncp(self.publicPath, path.join(destination, self.publicDir), callback);
+      ncp(self.publicPath, destination, callback);
     });
 
     /* Push an operation to write each artle in parallel */
