@@ -134,7 +134,12 @@ Tinman.prototype.loadArticles = function (callback) {
     }
 
     /* Sort the articles */
-    async.parallel(ops, callback);
+    async.parallel(ops, function (err) {
+      if (err) return callback(err);
+
+      self.articles = self.articles.reverse();
+      callback();
+    });
   });
 };
 

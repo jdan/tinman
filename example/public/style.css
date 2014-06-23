@@ -1,7 +1,3 @@
-* {
-  box-sizing: border-box;
-}
-
 body {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #222;
@@ -23,7 +19,7 @@ h1 a:visited {
   margin-bottom: 40px;
 }
 
-h1 a {
+h1 a, .article h1 a {
   text-decoration: none;
   color: inherit;
 }
@@ -36,8 +32,17 @@ h1 a {
   font-weight: 200;
 }
 
+.article a, .article a {
+  color: #9d261d;
+  text-decoration: none;
+}
+
 .article .content {
   font-family: "Alegreya", Palatino, Georgia, serif;
   font-size: 20px;
   line-height: 1.6;
+}
+
+.article .more {
+  font-size: 90%;
 }
