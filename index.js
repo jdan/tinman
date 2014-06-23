@@ -133,6 +133,7 @@ Tinman.prototype.loadArticles = function (callback) {
       ops.push(self.renderArticle(files[i]));
     }
 
+    /* Sort the articles */
     async.parallel(ops, callback);
   });
 };
@@ -164,7 +165,18 @@ Tinman.prototype.renderArticle = function (file) {
       /* Render the markdown of the body */
       article.title = article.title || 'Untitled';
       article.body = marked(parsedArticle.body);
+
+      /* Render the summary as the first paragraph of the article */
+      if (/\n\n/.test(parsedArticle.body)) {
+        article.summary = marked(parsedArticle.body.match(/.*(?=\n\n)/)[0]);
+      } else {
+        article.summary = article.body;
+      }
+
+      /* The slug defaults to the filename */
       article.slug = article.slug || path.basename(file, path.extname(file));
+
+      /* The location (or route) defaults to /[slug] */
       article.location = article.location || '/' + article.slug;
 
       /* Render the article with the template and layout */

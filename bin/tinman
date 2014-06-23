@@ -1,4 +1,6 @@
 #!/usr/bin/env node
 
-var tinman = require('../')
-tinman.build({ directory: process.argv[2] }, 'myblog');
+var tinman = require('../');
+//tinman.build({ directory: process.argv[2] }, 'myblog');
+tinman.createServer({ directory: process.argv[2] }).listen(3000);
+console.log('Serving listening on port 3000...');

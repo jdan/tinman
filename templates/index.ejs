@@ -1,5 +1,6 @@
-<ul>
-  <% articles.forEach(function (article) { %>
-    <li><a href="<%= article.location %>"><%= article.title %></a></li>
-  <% }) %>
-</ul>
+<% articles.forEach(function (article) { %>
+  <div class="article">
+    <h1><a href="<%= article.location %>"><%= article.title %></a></h1>
+    <p><%- article.summary %></p>
+  </div>
+<% }) %>
