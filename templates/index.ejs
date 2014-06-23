@@ -1,6 +1,11 @@
 <% articles.forEach(function (article) { %>
   <div class="article">
-    <h1><a href="<%= article.location %>"><%= article.title %></a></h1>
-    <p><%- article.summary %></p>
+    <div class="title">
+      <h1><a href="<%= article.location %>"><%= article.title %></a></h1>
+    </div>
+
+    <div class="content">
+      <p><%- article.summary %></p>
+    </div>
   </div>
 <% }) %>

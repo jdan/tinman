@@ -167,8 +167,9 @@ Tinman.prototype.renderArticle = function (file) {
       article.body = marked(parsedArticle.body);
 
       /* Render the summary as the first paragraph of the article */
-      if (/\n\n/.test(parsedArticle.body)) {
-        article.summary = marked(parsedArticle.body.match(/.*(?=\n\n)/)[0]);
+      var paragraphBreak = parsedArticle.body.indexOf("\n\n");
+      if (paragraphBreak > -1) {
+        article.summary = marked(parsedArticle.body.slice(0, paragraphBreak));
       } else {
         article.summary = article.body;
       }

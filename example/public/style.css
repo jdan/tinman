@@ -1,0 +1,43 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #222;
+  background-color: #fafafa;
+}
+
+h1 a:visited {
+  color: inherit;
+}
+
+.main {
+  width: 680px;
+  padding: 30px;
+  margin: 40px auto;
+}
+
+.blog-title {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 40px;
+}
+
+h1 a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.article {
+  margin: 50px 0;
+}
+
+.article h1 {
+  font-weight: 200;
+}
+
+.article .content {
+  font-family: "Alegreya", Palatino, Georgia, serif;
+  font-size: 20px;
+  line-height: 1.6;
+}
