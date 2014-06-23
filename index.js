@@ -161,11 +161,11 @@ Tinman.prototype.renderArticle = function (file) {
       var parsedArticle = fm(data.toString());
       var article = parsedArticle.attributes;
 
-      article.basename = path.basename(file, path.extname(file));
       /* Render the markdown of the body */
       article.title = article.title || 'Untitled';
       article.body = marked(parsedArticle.body);
-      article.location = article.location || '/' + article.basename;
+      article.slug = article.slug || path.basename(file, path.extname(file));
+      article.location = article.location || '/' + article.slug;
 
       /* Render the article with the template and layout */
       article.render = self.renderPage({
@@ -205,22 +205,18 @@ Tinman.prototype.configRoutes = function (callback) {
     res.send(self.indexPage);
   });
 
-  for (i = 0; i < this.articles.length; i++) {
-    (function (article) {
-      /* Preserve article with a closure */
-
-      /**
-       * Set the route as either the articles "location" property, or as its
-       * basename (filename without extension)
-       *
-       * TODO: json endpoint
-       */
-      self.server.get(article.location, function (req, res) {
-        /* Render the article template */
-        res.send(article.render);
-      });
-    })(this.articles[i]);
-  }
+  this.articles.forEach(function (article) {
+    /**
+     * Set the route as either the articles "location" property, or as its
+     * basename (filename without extension)
+     *
+     * TODO: json endpoint
+     */
+    self.server.get(article.location, function (req, res) {
+      /* Render the article template */
+      res.send(article.render);
+    });
+  });
 
   return callback();
 };
