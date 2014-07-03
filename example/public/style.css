@@ -1,15 +1,27 @@
 body {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #222;
-  background-color: #fafafa;
+  background-color: #ffffff;
 }
 
 h1 a:visited {
   color: inherit;
 }
 
+h3 {
+  margin-top: 40px;
+  margin-bottom: 0;
+}
+
+hr {
+  margin: 0;
+  border: none;
+  height: 1px;
+  background-color: #aaa;
+}
+
 .main {
-  width: 680px;
+  width: 860px;
   padding: 30px;
   margin: 40px auto;
 }
@@ -46,3 +58,14 @@ h1 a, .article h1 a {
 .article .more {
   font-size: 90%;
 }
+
+pre code, code {
+  background-color: #eee;
+  font-size: 90%;
+}
+
+pre code {
+  display: block;
+  padding: 15px;
+}
+
