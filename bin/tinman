@@ -40,7 +40,18 @@ program
     }
   });
 
-program.parse(process.argv);
+program
+  .command('server')
+  .description('serves the blog (default: --port 3000)')
+  .action(function () {
+    var port = program.port || 3000;
+    tinman.createServer().listen(port);
+    console.log('Server listening on port ' + port + '...');
+  });
+
+program
+  .option('-p, --port <port>', 'specifies the port to serve the blog on')
+  .parse(process.argv);
 
 if (!program.args.length) {
   program.help();
