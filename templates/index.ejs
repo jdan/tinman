@@ -1,7 +1,7 @@
 <% articles.forEach(function (article) { %>
   <div class="article">
     <div class="title">
-      <h1><a href="<%= article.location %>"><%= article.title %></a></h1>
+      <h1><a href="<%= article.route %>"><%= article.title %></a></h1>
     </div>
 
     <div class="content">
@@ -9,7 +9,7 @@
     </div>
 
     <div class="more">
-      <a href="<%= article.location %>">read on &raquo;</a>
+      <a href="<%= article.route %>">read on &raquo;</a>
     </div>
   </div>
 <% }) %>

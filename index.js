@@ -182,8 +182,8 @@ Tinman.prototype.renderArticle = function (file) {
       /* The slug defaults to the filename */
       article.slug = article.slug || path.basename(file, path.extname(file));
 
-      /* The location (or route) defaults to /[slug] */
-      article.location = article.location || '/' + article.slug;
+      /* The route (or route) defaults to /[slug] */
+      article.route = article.route || '/' + article.slug;
 
       /* Render the article with the template and layout */
       article.render = self.renderPage({
@@ -225,12 +225,12 @@ Tinman.prototype.configRoutes = function (callback) {
 
   this.articles.forEach(function (article) {
     /**
-     * Set the route as either the articles "location" property, or as its
+     * Set the route as either the articles "route" property, or as its
      * basename (filename without extension)
      *
      * TODO: json endpoint
      */
-    self.server.get(article.location, function (req, res) {
+    self.server.get(article.route, function (req, res) {
       /* Render the article template */
       res.send(article.render);
     });
@@ -276,7 +276,7 @@ Tinman.prototype.export = function (destination, callback) {
  */
 Tinman.prototype.exportArticle = function (destination, article) {
   return function (callback) {
-    var articlePath = path.join(destination, article.location);
+    var articlePath = path.join(destination, article.route);
     /* Create the path for the article */
     mkdirp(articlePath, function (err) {
       if (err) return callback(err);
