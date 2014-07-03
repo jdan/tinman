@@ -1,6 +1,47 @@
 #!/usr/bin/env node
 
+var program = require('commander');
 var tinman = require('../');
-//tinman.build({ directory: process.argv[2] }, 'myblog');
-tinman.createServer({ directory: process.argv[2] }).listen(3000);
-console.log('Serving listening on port 3000...');
+
+program
+  .version(require('../package.json').version)
+
+/**
+ * The `create` command creates a new tinman blog
+ */
+program
+  .command('create')
+  .description('creates a new tinman blog')
+  .action(function () {
+    var title;
+    function feedback() {
+      console.log([
+        '',
+        '  Your blog is ready! To get started:',
+        '',
+        '    cd ' + title + '/',
+        '    tinman server',
+        ''
+      ].join('\n'));
+      process.exit(0);    // :(
+    };
+
+    // TODO: handle --with-templates
+
+    if (program.args.length > 1) {
+      title = program.args[0];
+      tinman.create(program.args[0], feedback);
+    } else {
+      process.stdout.write('Blog title: ');
+      process.stdin.once('data', function (data) {
+        title = data.toString().trim();
+        tinman.create(title, feedback);
+      });
+    }
+  });
+
+program.parse(process.argv);
+
+if (!program.args.length) {
+  program.help();
+}
