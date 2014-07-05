@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
+var fs = require('fs');
 var program = require('commander');
 var readline = require('readline');
 var tinman = require('../');
+
 
 /**
  * A simple prompt that writes `message` to stdout and invokes `callback`
@@ -20,8 +22,6 @@ function prompt(message, callback) {
   });
 }
 
-program
-  .version(require('../package.json').version)
 
 /**
  * The `create` command creates a new tinman blog
@@ -87,7 +87,7 @@ program
   .description('serves the blog (default: --port 3000)')
   .action(function () {
     var port = program.port || 3000;
-    tinman.createServer().listen(port);
+    tinman.createServer(tinman.readConfig()).listen(port);
     console.log('Server listening on port ' + port + '...');
   });
 
@@ -96,6 +96,7 @@ program
  * Add some options and parse argv
  */
 program
+  .version(require('../package.json').version)
   .option('-p, --port <port>', 'specifies the port to serve the blog on')
   .parse(process.argv);
 

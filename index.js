@@ -126,6 +126,11 @@ Tinman.prototype.generateResourceTags = function (callback) {
 Tinman.prototype.loadArticles = function (callback) {
   var self = this;
   var fullPath = path.join(this.directory, this.articlesDir);
+
+  if (!fs.existsSync(fullPath)) {
+    return callback(new Error("Articles directory: " + fullPath + " not found"));
+  }
+
   fs.readdir(fullPath, function (err, files) {
     if (err) return callback(err);
     var i, ops = [];
@@ -296,13 +301,30 @@ Tinman.prototype.exportArticle = function (destination, article) {
 /* Expose the Tinman class */
 exports.Tinman = Tinman;
 
+
+/**
+ * Simple helper function to read the tinman config file
+ */
+exports.readConfig = function () {
+  var configFile = 'tinman.json';
+
+  if (!fs.existsSync(configFile)) {
+    return {};
+  } else {
+    return JSON.parse(fs.readFileSync(configFile));
+  }
+};
+
+
 /**
  * Create and return an express web server
  */
 exports.createServer = function (options) {
   /* Create a new Tinman instance and run it */
   var instance = new Tinman(options);
-  instance.run();
+  instance.run(function (err) {
+    if (err) throw err;
+  });
 
   /* Return the express server */
   return instance.server;
@@ -315,7 +337,8 @@ exports.createServer = function (options) {
 exports.build = function (options, destination) {
   var instance = new Tinman(options);
 
-  instance.run(function () {
+  instance.run(function (err) {
+    if (err) throw err;
     return instance.export(destination, function (err) {
       if (err) throw err;
     });
@@ -344,7 +367,10 @@ exports.createArticle = function (title, callback) {
   var slug = title.toLowerCase().replace(/[^A-Za-z ]+/g, '').replace(/\s+/g, '-');
   var date = strftime('%F');
 
-  var filename = 'articles/' + date + '-' + slug + '.md';
+  /* Read in the articles directory specified in the config */
+  var articlesDir = exports.readConfig().articles || Tinman.DEFAULTS.articles;
+
+  var filename = path.join(articlesDir, date + '-' + slug + '.md');
   var contents = [
     '---',
     'title: ' + title,
