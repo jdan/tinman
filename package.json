@@ -1,12 +1,16 @@
 {
   "name": "tinman",
   "version": "0.0.0",
-  "description": "A tiny, extensible blog engine based on the toto library",
+  "description": "A tiny static-ready blog engine based on the toto library",
   "main": "index.js",
   "keywords": [
     "blog",
     "static"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jdan/tinman.git"
+  },
   "author": "Jordan Scales <scalesjordan@gmail.com>",
   "license": "MIT",
   "dependencies": {
