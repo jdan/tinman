@@ -1,6 +1,6 @@
 ---
 title: Hello, World!
-date: 2014/06/22
+date: 2014-06-22
 slug: hello-world
 ---
 
@@ -144,4 +144,3 @@ template automatically.
 
 Need more customizability? No problem. The `tinman` CLI was built on an
 API that you can include like any other node module.
-

@@ -9,6 +9,7 @@ var gs = require('glob-stream');
 var marked = require('marked');
 var mkdirp = require('mkdirp');
 var ncp = require('ncp');
+var strftime = require('strftime');
 
 function Tinman(options) {
   options = options || {};
@@ -180,6 +181,7 @@ Tinman.prototype.renderArticle = function (file) {
       }
 
       /* The slug defaults to the filename */
+      // TODO: default slug
       article.slug = article.slug || path.basename(file, path.extname(file));
 
       /* The route (or route) defaults to /[slug] */
@@ -324,11 +326,38 @@ exports.build = function (options, destination) {
 /**
  * Create an example blog
  */
-exports.create = function (title, callback) {
+exports.createBlog = function (title, callback) {
   var cwd = path.resolve();
 
   fs.mkdir(title, function (err) {
     if (err) throw err;
     ncp(path.join(__dirname, 'example'), title, callback);
+  });
+};
+
+
+/**
+ * Create a new article
+ */
+exports.createArticle = function (title, callback) {
+  var now = new Date();
+  var slug = title.toLowerCase().replace(/[^A-Za-z ]+/g, '').replace(/\s+/g, '-');
+  var date = strftime('%F');
+
+  var filename = 'articles/' + date + '-' + slug + '.md';
+  var contents = [
+    '---',
+    'title: ' + title,
+    'date: ' + date,
+    'slug: ' + slug,
+    '---',
+    '',
+    'Once upon a time...'
+  ].join('\n');
+
+  return fs.writeFile(filename, contents, function (err) {
+    if (err) return callback(err);
+
+    callback(null, filename);
   });
 };

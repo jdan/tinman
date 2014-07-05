@@ -1,7 +1,24 @@
 #!/usr/bin/env node
 
 var program = require('commander');
+var readline = require('readline');
 var tinman = require('../');
+
+/**
+ * A simple prompt that writes `message` to stdout and invokes `callback`
+ * with the data received from stdin
+ */
+function prompt(message, callback) {
+  var rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  rl.question(message, function (data) {
+    callback(data);
+    rl.close();
+  });
+}
 
 program
   .version(require('../package.json').version)
@@ -14,7 +31,9 @@ program
   .description('creates a new tinman blog')
   .action(function () {
     var title;
-    function feedback() {
+    function feedback(err) {
+      if (err) throw err;
+
       console.log([
         '',
         '  Your blog is ready! To get started:',
@@ -23,23 +42,46 @@ program
         '    tinman server',
         ''
       ].join('\n'));
-      process.exit(0);    // :(
     };
 
     // TODO: handle --with-templates
 
     if (program.args.length > 1) {
       title = program.args[0];
-      tinman.create(program.args[0], feedback);
+      tinman.createBlog(program.args[0], feedback);
     } else {
-      process.stdout.write('Blog title: ');
-      process.stdin.once('data', function (data) {
-        title = data.toString().trim();
-        tinman.create(title, feedback);
+      prompt('Blog title: ', function (answer) {
+        title = answer;
+        tinman.createBlog(title, feedback);
       });
     }
   });
 
+
+/**
+ * The `new` command is used to generate an article
+ */
+program
+  .command('new')
+  .description('creates a new article')
+  .action(function () {
+    prompt('Title: ', function (title) {
+      tinman.createArticle(title, function (err, filename) {
+        if (err) throw err;
+
+        console.log([
+          '',
+          '  Article generated at: ' + filename,
+          ''
+        ].join('\n'));
+      });
+    });
+  });
+
+
+/**
+ * Run a server on port 3000 (or specify a different one with --port)
+ */
 program
   .command('server')
   .description('serves the blog (default: --port 3000)')
@@ -49,6 +91,10 @@ program
     console.log('Server listening on port ' + port + '...');
   });
 
+
+/**
+ * Add some options and parse argv
+ */
 program
   .option('-p, --port <port>', 'specifies the port to serve the blog on')
   .parse(process.argv);
