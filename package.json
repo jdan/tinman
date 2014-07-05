@@ -1,8 +1,11 @@
 {
   "name": "tinman",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A tiny static-ready blog engine based on the toto library",
   "main": "index.js",
+  "bin": {
+    "tinman": "./bin/tinman"
+  },
   "keywords": [
     "blog",
     "static"
