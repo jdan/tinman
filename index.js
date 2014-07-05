@@ -334,14 +334,13 @@ exports.createServer = function (options) {
 /**
  * Generate a static site to a given destination
  */
-exports.build = function (options, destination) {
+exports.build = function (options, destination, callback) {
   var instance = new Tinman(options);
 
   instance.run(function (err) {
-    if (err) throw err;
-    return instance.export(destination, function (err) {
-      if (err) throw err;
-    });
+    if (err) return callback(err);
+
+    instance.export(destination, callback);
   });
 };
 

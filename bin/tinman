@@ -93,11 +93,32 @@ program
 
 
 /**
+ * Export the blog
+ */
+program
+  .command('build')
+  .description('builds the blog to a static site (default: --output-dir: build/)')
+  .action(function () {
+    var destination = program.outputDir || 'build/';
+    tinman.build(tinman.readConfig(), destination, function (err) {
+      if (err) throw err;
+
+      console.log([
+        '',
+        '  Blog successfully built to: ' + destination,
+        ''
+      ].join('\n'));
+    });
+  });
+
+
+/**
  * Add some options and parse argv
  */
 program
   .version(require('../package.json').version)
   .option('-p, --port <port>', 'specifies the port to serve the blog on')
+  .option('-o, --output-dir <dir>', 'specifies the destination path for building the blog')
   .parse(process.argv);
 
 if (!program.args.length) {
