@@ -44,7 +44,7 @@ function Tinman(options) {
 
 
 Tinman.DEFAULTS = {
-  title: 'My Tinman',
+  title: path.basename(process.cwd()),
   directory: '.',
   articles: 'articles',
   public: 'public',
