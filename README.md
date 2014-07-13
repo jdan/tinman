@@ -88,6 +88,9 @@ Once upon a time...
 * **route** allows you to completely override this and use whatever
   route you'd like (`/path/to/my/article`)
 
+You can include any custom options you'd like (i.e. `color: red`) in
+your YAML Front Matter, and recall it from a custom template.
+
 ## Templates
 
 Tinman uses [EJS](http://embeddedjs.com/) templates and includes the
@@ -125,6 +128,28 @@ Beyond the articles directory and sample stylesheet, the
 `--with-templates` option creates a templates directory and a
 `tinman.json` file, instructing Tinman to use these templates instead of the
 ones built into it.
+
+## Static Files
+
+Tinman will automatically copy static assets (images, stylesheets,
+javascripts) from the "public" directory (default: `public/`).
+
+For instance, you can write the following to **public/css/colors/main.css**:
+
+```css
+body {
+  color: #222222;
+}
+```
+
+And access it like so:
+
+```html
+<link rel="stylesheet" href="/css/colors/main.css">
+```
+
+You can follow the same pattern for including images in your articles,
+or even serving static HTML documents.
 
 --
 [MIT Licensed](https://github.com/jdan/tinman/blob/master/LICENSE)
