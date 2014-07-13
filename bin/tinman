@@ -44,15 +44,13 @@ program
       ].join('\n'));
     };
 
-    // TODO: handle --with-templates
-
     if (program.args.length > 1) {
       title = program.args[0];
-      tinman.createBlog(program.args[0], feedback);
+      tinman.createBlog(program.args[0], program.withTemplates, feedback);
     } else {
       prompt('Blog title: ', function (answer) {
         title = answer;
-        tinman.createBlog(title, feedback);
+        tinman.createBlog(title, program.withTemplates, feedback);
       });
     }
   });
@@ -118,7 +116,10 @@ program
 program
   .version(require('../package.json').version)
   .option('-p, --port <port>', 'specifies the port to serve the blog on')
-  .option('-o, --output-dir <dir>', 'specifies the destination path for building the blog')
+  .option('-o, --output-dir <dir>',
+          'specifies the destination path for building the blog')
+  .option('-w, --with-templates',
+          'copies over the default templates with a tinman.json when creating a blog')
   .parse(process.argv);
 
 if (!program.args.length) {

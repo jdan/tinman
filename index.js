@@ -348,12 +348,37 @@ exports.build = function (options, destination, callback) {
 /**
  * Create an example blog
  */
-exports.createBlog = function (title, callback) {
+exports.createBlog = function (title, withTemplates, callback) {
   var cwd = path.resolve();
+  var ops = [];
 
   fs.mkdir(title, function (err) {
     if (err) throw err;
-    ncp(path.join(__dirname, 'example'), title, callback);
+    ops.push(function (done) {
+      ncp(path.join(__dirname, 'example'), title, done);
+    });
+
+    if (withTemplates) {
+      /* copy the templates directory */
+      ops.push(function (done) {
+        var templateDir = path.join(title, 'templates');
+        fs.mkdirSync(templateDir);
+        ncp(path.join(__dirname, 'templates'), templateDir, done);
+      });
+
+      /* generate a tinman.json */
+      var tinmanJson = JSON.stringify({
+        template: 'templates/article.ejs',
+        index: 'templates/index.ejs',
+        layout: 'templates/layout.ejs'
+      }, null, 2);
+
+      ops.push(function (done) {
+        fs.writeFile(path.join(title, 'tinman.json'), tinmanJson, done);
+      });
+    }
+
+    return async.parallel(ops, callback);
   });
 };
 
