@@ -1,6 +1,5 @@
 var fs = require('fs');
 var path = require('path');
-
 var async = require('async');
 var ejs = require('ejs');
 var express = require('express');
@@ -10,6 +9,7 @@ var marked = require('marked');
 var mkdirp = require('mkdirp');
 var ncp = require('ncp');
 var strftime = require('strftime');
+var util = require('./lib/util');
 
 function Tinman(options) {
   options = options || {};
@@ -185,9 +185,13 @@ Tinman.prototype.renderArticle = function (file) {
         article.summary = article.body;
       }
 
-      /* The slug defaults to the filename */
-      // TODO: default slug
-      article.slug = article.slug || path.basename(file, path.extname(file));
+      /**
+       * The slug defaults to the sluggized title as defined in
+       * lib/util.js.
+       *
+       * i.e. sluggize('Hello, World!') => hello-world
+       */
+      article.slug = article.slug || util.sluggize(article.title);
 
       /* The route (or route) defaults to /[slug] */
       article.route = article.route || '/' + article.slug;
@@ -366,12 +370,13 @@ exports.createBlog = function (title, withTemplates, callback) {
         ncp(path.join(__dirname, 'templates'), templateDir, done);
       });
 
-      /* generate a tinman.json */
+      /* Generate a tinman.json */
       var tinmanJson = JSON.stringify({
+        title: title,
         template: 'templates/article.ejs',
         index: 'templates/index.ejs',
         layout: 'templates/layout.ejs'
-      }, null, 2);
+      }, null, 2) + '\n';
 
       ops.push(function (done) {
         fs.writeFile(path.join(title, 'tinman.json'), tinmanJson, done);
@@ -388,7 +393,7 @@ exports.createBlog = function (title, withTemplates, callback) {
  */
 exports.createArticle = function (title, callback) {
   var now = new Date();
-  var slug = title.toLowerCase().replace(/[^A-Za-z ]+/g, '').replace(/\s+/g, '-');
+  var slug = util.sluggize(title);
   var date = strftime('%F');
 
   /* Read in the articles directory specified in the config */
