@@ -1,11 +1,12 @@
 ---
 title: Hello, World!
 date: 2014-06-22
-slug: hello-world
 ---
 
 Tinman is a tiny static-ready blog engine based on the
 [toto](http://github.com/cloudhead/toto) library.
+
+![logo](https://i.cloudup.com/ovFVGvqIQI.png)
 
 ```
 npm install -g tinman
@@ -23,9 +24,9 @@ example
     └── style.css
 ```
 
-Create a new blog
+#### Create a new blog
 
-```
+```bash
 $ tinman create
 Blog title: myblog
 
@@ -35,20 +36,23 @@ Blog title: myblog
     tinman server
 
 $ tinman create myblog
+
+# Generate example templates to play with as well
+$ tinman create myblog --with-templates
 ```
 
-Generate a new article
+#### Generate a new article
 
-```
+```bash
 $ tinman new
 Title: This is my first blog post
 
   Article generated at: articles/2014-07-05-this-is-my-first-blog-post.md
 ```
 
-Run your blog on a local webserver
+#### Run your blog on a local webserver
 
-```
+```bash
 $ tinman server
 Server listening on port 3000...
 
@@ -56,9 +60,9 @@ $ tinman server --port 1337
 Server listening on port 1337...
 ```
 
-Build your blog as a static site
+#### Build your blog as a static site
 
-```
+```bash
 $ tinman build
 
   Blog successfully built to: build/
@@ -77,19 +81,80 @@ and use YAML Front Matter to set various options.
 ---
 title: Hello, World!
 date: 2014-06-22
-slug: hello-world
 ---
 
 Once upon a time...
 ```
 
-* **title** stores the title of the article
-* **date** is the date that the article was written/published/etc
-* **slug** is used in the URL of the article (`/your-slug-here`)
-* **route** allows you to completely override this and use whatever
-  route you'd like (`/path/to/my/article`)
+This article will be accessible at the url `/hello-world` by default
+(based on the article's title). You can customize this option by either:
+
+* Setting the `slug` property, making the article accessible at
+  `/your-slug-here`
+* Setting the `route` property, and completely overriding the slug (i.e.
+  `route: /2014/06/24/musings/my-article`
+
+You can include any custom options you'd like (i.e. `color: red`) in
+your YAML Front Matter, and recall it from a custom template.
 
 ## Templates
 
---
+Tinman uses [EJS](http://embeddedjs.com/) templates and includes the
+following:
+
+* **article.ejs** for templating an individual article
+* **index.ejs** for the article index page
+* **layout.ejs** which wraps around the other two and renders asset tags
+
+To customize these templates, pass the `--with-templates` option to
+`tinman create`:
+
+```bash
+$ tinman create myblog --with-templates
+
+  Your blog is ready! To get started:
+
+    cd myblog/
+    tinman server
+
+$ tree myblog
+myblog
+├── articles
+│   └── 2014-06-22-hello-world.md
+├── public
+│   └── style.css
+├── templates
+│   ├── article.ejs
+│   ├── index.ejs
+│   └── layout.ejs
+└── tinman.json
+```
+
+Beyond the articles directory and sample stylesheet, the
+`--with-templates` option creates a templates directory and a
+`tinman.json` file, instructing Tinman to use these templates instead of the
+ones built into it.
+
+## Static Files
+
+Tinman will automatically copy static assets (images, stylesheets,
+javascripts) from the "public" directory (default: `public/`).
+
+For instance, you can write the following to **public/css/colors/main.css**:
+
+```css
+body {
+  color: #222222;
+}
+```
+
+And access it like so:
+
+```html
+<link rel="stylesheet" href="/css/colors/main.css">
+```
+
+You can follow the same pattern for including images in your articles,
+or even serving static HTML documents.
+
 [MIT Licensed](https://github.com/jdan/tinman/blob/master/LICENSE)

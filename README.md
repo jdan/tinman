@@ -76,17 +76,18 @@ and use YAML Front Matter to set various options.
 ---
 title: Hello, World!
 date: 2014-06-22
-slug: hello-world
 ---
 
 Once upon a time...
 ```
 
-* **title** stores the title of the article
-* **date** is the date that the article was written/published/etc
-* **slug** is used in the URL of the article (`/your-slug-here`)
-* **route** allows you to completely override this and use whatever
-  route you'd like (`/path/to/my/article`)
+This article will be accessible at the url `/hello-world` by default
+(based on the article's title). You can customize this option by either:
+
+* Setting the `slug` property, making the article accessible at
+  `/your-slug-here`
+* Setting the `route` property, and completely overriding the slug (i.e.
+  `route: /2014/06/24/musings/my-article`
 
 You can include any custom options you'd like (i.e. `color: red`) in
 your YAML Front Matter, and recall it from a custom template.
