@@ -1,4 +1,4 @@
-# tinman
+![logo](https://i.cloudup.com/ovFVGvqIQI.png)
 
 A tiny static-ready blog engine based on the
 [toto](http://github.com/cloudhead/toto) library.
@@ -19,7 +19,7 @@ example
     └── style.css
 ```
 
-Create a new blog
+#### Create a new blog
 
 ```bash
 $ tinman create
@@ -36,7 +36,7 @@ $ tinman create myblog
 $ tinman create myblog --with-templates
 ```
 
-Generate a new article
+#### Generate a new article
 
 ```bash
 $ tinman new
@@ -45,7 +45,7 @@ Title: This is my first blog post
   Article generated at: articles/2014-07-05-this-is-my-first-blog-post.md
 ```
 
-Run your blog on a local webserver
+#### Run your blog on a local webserver
 
 ```bash
 $ tinman server
@@ -55,7 +55,7 @@ $ tinman server --port 1337
 Server listening on port 1337...
 ```
 
-Build your blog as a static site
+#### Build your blog as a static site
 
 ```bash
 $ tinman build
@@ -90,7 +90,7 @@ Once upon a time...
 
 ## Templates
 
-Tinman uses [EJS](http://embeddedjs.com/) for templates and includes the
+Tinman uses [EJS](http://embeddedjs.com/) templates and includes the
 following:
 
 * **article.ejs** for templating an individual article
