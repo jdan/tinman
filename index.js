@@ -173,14 +173,30 @@ Tinman.prototype.renderArticle = function (file) {
       var parsedArticle = fm(data.toString());
       var article = parsedArticle.attributes;
 
+      article.filename = file;
+
       /* Render the markdown of the body */
       article.title = article.title || 'Untitled';
       article.body = marked(parsedArticle.body);
 
-      /* Set the article date to UTC to prevent timezones setting us back */
-      ['FullYear', 'Month', 'Date', 'Hours'].forEach(function (field) {
-        article.date['set' + field](article.date['getUTC' + field]());
-      });
+      /**
+       * Extract the date from the article filename if unspecified, only if
+       * the article follows the YYYY-MM-DD-title.md convention
+       */
+      if (!article.date && /^\d{4}-\d{2}-\d{2}/.test(article.filename)) {
+        var yyyymmdd = article.filename.match(/^\d{4}-\d{2}-\d{2}/)[0];
+        article.date = new Date(Date.parse(yyyymmdd));
+      }
+
+      if (article.date) {
+        /* Set the article date to UTC to prevent timezones setting us back */
+        ['FullYear', 'Month', 'Date', 'Hours'].forEach(function (field) {
+          article.date['set' + field](article.date['getUTC' + field]());
+        });
+      } else {
+        /* Define it for our template */
+        article.date = null;
+      }
 
       /* Expose `strftime` */
       article.strftime = strftime;
@@ -411,7 +427,6 @@ exports.createArticle = function (title, callback) {
   var contents = [
     '---',
     'title: ' + title,
-    'date: ' + date,
     'slug: ' + slug,
     '---',
     '',
@@ -420,7 +435,6 @@ exports.createArticle = function (title, callback) {
 
   return fs.writeFile(filename, contents, function (err) {
     if (err) return callback(err);
-
     callback(null, filename);
   });
 };

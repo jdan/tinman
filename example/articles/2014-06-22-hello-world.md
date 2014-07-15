@@ -1,6 +1,5 @@
 ---
 title: Hello, World!
-date: 2014-06-22
 ---
 
 Tinman is a tiny static-ready blog engine based on the
@@ -36,10 +35,9 @@ Some features include:
 #### What do I get?
 
 Tinman generates a page for each article, and an index page listing your
-articles (sorted by filename).
-
-Naming your articles `YYYY-MM-DD-my-title.md` will sort them such that
-the most recent article is listed first.
+articles (sorted by filename). Naming your articles `YYYY-MM-DD-my-title.md`
+will sort them such that the most recent article is listed first. It
+will also set the article's date property for you.
 
 ## Usage
 
@@ -157,9 +155,13 @@ ones built into it.
 #### What Data Do My Templates Receive?
 
 The **article template** receives all properties of the article as defined in
-the YAML Front Matter. The content of the article is stored as `body`. A
-summary of the article is also generated under the appropriately-named
-field `summary`.
+the YAML Front Matter. The content of the article is stored as `body`. Some
+extra fields include:
+
+* **summary**: the first paragraph of the rendered article
+* **filename**: self-explanatory
+* **date**: the date either extracted from the filename or from the
+  `date` property of the article's Front Matter
 
 The **index template** has access to the array `articles`, which holds
 every article in your blog.

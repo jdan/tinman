@@ -1,6 +1,8 @@
 <div class="article">
   <div class="title">
-    <div class="more date"><em><%= strftime('%B %d, %Y', date) %></em></div>
+    <% if (date) { %>
+      <div class="more date"><em><%= strftime('%B %d, %Y', date) %></em></div>
+    <% } %>
     <h1><%= title %></h1>
   </div>
 
