@@ -67,6 +67,14 @@ $ tinman build --output-dir www
   Blog successfully built to: www
 ```
 
+#### What do I get?
+
+Tinman generates a page for each article, and an index page listing your
+articles (sorted by filename).
+
+Naming your articles `YYYY-MM-DD-my-title.md` will sort them such that
+the most recent article is listed first.
+
 ## Writing Articles
 
 Articles are written in [Markdown](http://daringfireball.net/projects/markdown/)
@@ -130,6 +138,22 @@ Beyond the articles directory and sample stylesheet, the
 `tinman.json` file, instructing Tinman to use these templates instead of the
 ones built into it.
 
+#### What Data Do My Templates Receive?
+
+The **article template** receives all properties of the article as defined in
+the YAML Front Matter. The content of the article is stored as `body`. A
+summary of the article is also generated under the appropriately-named
+field `summary`.
+
+The **index template** has access to the array `articles`, which holds
+every article in your blog.
+
+The **layout template** receives the blog's title and a `body`, which
+contains the rendered HTML of the page it contains (either an article
+page or the index). This template also has access to two strings,
+`stylesheets` and `scripts`, which store the CSS/JS resource tags
+generated automatically based on the contents of your public directory.
+
 ## Static Files
 
 Tinman will automatically copy static assets (images, stylesheets,
@@ -151,6 +175,12 @@ And access it like so:
 
 You can follow the same pattern for including images in your articles,
 or even serving static HTML documents.
+
+In addition, Tinman scans for javascripts (`*.js`) and stylesheets (`*.css`)
+and automatically generates resource tags which are placed in the layout
+template (*layout.ejs* is sent both a *scripts* and *stylesheets*
+string). **You do not need to edit any templates after writing
+javascripts or stylesheets.**
 
 --
 [MIT Licensed](https://github.com/jdan/tinman/blob/master/LICENSE)
