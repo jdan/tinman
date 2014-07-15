@@ -7,9 +7,9 @@ A tiny static-ready blog engine based on the
 npm install -g tinman
 ```
 
-## Usage
+## What is Tinman?
 
-The typical tinman blog looks like this:
+A basic tinman blog looks like this:
 
 ```
 example
@@ -18,6 +18,25 @@ example
 └── public
     └── style.css
 ```
+
+Some features include:
+
+* Generate a simple blog with nothing but a few markdown files
+* Serve anything static by placing it in the *public/* directory
+* A comprehensive CLI to handle best-practices for you
+* Customize templates to your heart's desire
+* Run your blog as web server or export it as a static site
+* Add any CSS or JavaScript and have it just work
+
+#### What do I get?
+
+Tinman generates a page for each article, and an index page listing your
+articles (sorted by filename).
+
+Naming your articles `YYYY-MM-DD-my-title.md` will sort them such that
+the most recent article is listed first.
+
+## Usage
 
 #### Create a new blog
 
@@ -66,14 +85,6 @@ $ tinman build --output-dir www
 
   Blog successfully built to: www
 ```
-
-#### What do I get?
-
-Tinman generates a page for each article, and an index page listing your
-articles (sorted by filename).
-
-Naming your articles `YYYY-MM-DD-my-title.md` will sort them such that
-the most recent article is listed first.
 
 ## Writing Articles
 
