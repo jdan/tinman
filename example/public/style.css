@@ -59,6 +59,12 @@ h1 a, .article h1 a {
   font-size: 90%;
 }
 
+.article .date {
+  padding-top: 5px;
+  float: right;
+  color: #ccc;
+}
+
 pre code, code {
   background-color: #eee;
   font-size: 90%;

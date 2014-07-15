@@ -177,6 +177,14 @@ Tinman.prototype.renderArticle = function (file) {
       article.title = article.title || 'Untitled';
       article.body = marked(parsedArticle.body);
 
+      /* Set the article date to UTC to prevent timezones setting us back */
+      ['FullYear', 'Month', 'Date', 'Hours'].forEach(function (field) {
+        article.date['set' + field](article.date['getUTC' + field]());
+      });
+
+      /* Expose `strftime` */
+      article.strftime = strftime;
+
       /* Render the summary as the first paragraph of the article */
       var paragraphBreak = parsedArticle.body.indexOf("\n\n");
       if (paragraphBreak > -1) {

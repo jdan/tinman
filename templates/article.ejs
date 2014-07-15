@@ -1,9 +1,14 @@
 <div class="article">
   <div class="title">
+    <div class="more date"><em><%= strftime('%B %d, %Y', date) %></em></div>
     <h1><%= title %></h1>
   </div>
 
   <div class="content">
     <%- body %>
   </div>
+
+  <div class="more">
+    <a href="/">&laquo; home</a>
+  </a>
 </div>
