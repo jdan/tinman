@@ -395,12 +395,18 @@ exports.createBlog = function (title, withTemplates, callback) {
       });
 
       /* Generate a tinman.json */
-      var tinmanJson = JSON.stringify({
-        title: title,
-        template: 'templates/article.ejs',
-        index: 'templates/index.ejs',
-        layout: 'templates/layout.ejs'
-      }, null, 2) + '\n';
+      var tinmanJson = [
+        '{',
+        '  "title": "' + title + '",',
+        '',
+        '  "articles": "articles",',
+        '  "public": "public",',
+        '',
+        '  "template": "templates/article.ejs",',
+        '  "index": "templates/index.ejs",',
+        '  "layout": "templates/layout.ejs"',
+        '}\n'
+      ].join('\n');
 
       ops.push(function (done) {
         fs.writeFile(path.join(title, 'tinman.json'), tinmanJson, done);
