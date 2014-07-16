@@ -148,7 +148,7 @@ Beyond the articles directory and sample stylesheet, the
 `tinman.json` file, instructing Tinman to use these templates instead of the
 ones built into it.
 
-#### What Data Do My Templates Receive?
+#### What data do my templates receive?
 
 The **article template** receives all properties of the article as defined in
 the YAML Front Matter. The content of the article is stored as `body`. Some
