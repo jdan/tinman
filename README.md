@@ -191,10 +191,9 @@ You can follow the same pattern for including images in your articles,
 or even serving static HTML documents.
 
 In addition, Tinman scans for javascripts (`*.js`) and stylesheets (`*.css`)
-and automatically generates resource tags which are placed in the layout
-template (*layout.ejs* is sent both a *scripts* and *stylesheets*
-string). **You do not need to edit any templates after writing
-javascripts or stylesheets.**
+and automatically generates resource tags in the layout template
+(*layout.ejs* is sent both a *scripts* and *stylesheets* string). **You do
+not need to edit any templates after writing javascripts or stylesheets.**
 
 --
 [MIT Licensed](https://github.com/jdan/tinman/blob/master/LICENSE)
