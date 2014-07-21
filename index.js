@@ -375,6 +375,7 @@ exports.build = function (options, destination, callback) {
 
 /**
  * Create an example blog
+ * TODO: We can move this somewhere else, no need for it to be in index.js
  */
 exports.createBlog = function (title, withTemplates, callback) {
   var cwd = path.resolve();
@@ -420,6 +421,7 @@ exports.createBlog = function (title, withTemplates, callback) {
 
 /**
  * Create a new article
+ * TODO: Same as above, this can probably be moved elsewhere
  */
 exports.createArticle = function (title, callback) {
   var now = new Date();
