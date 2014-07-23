@@ -12,8 +12,10 @@ var strftime = require('strftime');
 var util = require('./lib/util');
 
 function Tinman(options) {
+  var moduleName, plugin, prop;
+
   options = options || {};
-  for (var prop in Tinman.DEFAULTS) {
+  for (prop in Tinman.DEFAULTS) {
     /* Won't work for a falsey option */
     options[prop] = options[prop] || Tinman.DEFAULTS[prop];
   }
@@ -30,6 +32,24 @@ function Tinman(options) {
   this.layoutTemplate = fs.readFileSync(options.layout, 'utf-8');
   this.articleTemplate = fs.readFileSync(options.template, 'utf-8');
   this.indexTemplate = fs.readFileSync(options.index, 'utf-8');
+
+  /* Load plugins */
+  this.plugins = {};
+
+  for (plugin in options.plugins) {
+    moduleName = options.plugins[plugin];
+
+    /**
+     * If our plugin is listed as a relative module (i.e. ./hello) we need to
+     * resolve the path before sending it to require()
+     */
+    if (/^\./.test(moduleName)) {
+      moduleName = path.resolve(moduleName);
+    }
+
+    /* Load the plugin into this.plugins */
+    this.plugins[plugin] = require(moduleName);
+  }
 
   /**
    * Define some instance variables:
@@ -50,7 +70,8 @@ Tinman.DEFAULTS = {
   public: 'public',
   layout: path.resolve(__dirname, 'templates/layout.ejs'),
   template: path.resolve(__dirname, 'templates/article.ejs'),
-  index: path.resolve(__dirname, 'templates/index.ejs')
+  index: path.resolve(__dirname, 'templates/index.ejs'),
+  plugins: {}
 };
 
 
@@ -99,6 +120,7 @@ Tinman.prototype.generateResourceTags = function (callback) {
   });
 
   stream.on('end', function () {
+    /* We may want to set these as instance variables */
     scripts = scripts.map(function (asset) {
       return '<script src="/' + asset + '"></script>';
     });
@@ -107,10 +129,22 @@ Tinman.prototype.generateResourceTags = function (callback) {
       return '<link rel="stylesheet" href="/' + asset + '">';
     });
 
+    /**
+     * Declare the renderPage function which acts as a wrapper around the EJS
+     * render function, allowing us to set several fields accessible by
+     * all templates, including:
+     *
+     * - The `title` of the blog
+     * - The `stylesheets` and `scripts` resource tags
+     * - Plugins
+     *
+     * TODO (?): Move this into the callback of generateResourceTags instead
+     */
     self.renderPage = function (options) {
       options.title = self.title;
       options.stylesheets = styles.join('\n');
       options.scripts = scripts.join('\n');
+      options.plugins = self.plugins;
 
       return ejs.render(self.layoutTemplate, options);
     };
