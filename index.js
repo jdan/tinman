@@ -45,6 +45,8 @@ function Tinman(options) {
      */
     if (/^\./.test(moduleName)) {
       moduleName = path.resolve(moduleName);
+    } else {
+      moduleName = path.resolve('./node_modules', moduleName);
     }
 
     /* Load the plugin into this.plugins */
@@ -254,6 +256,10 @@ Tinman.prototype.renderArticle = function (file) {
       /* The route (or route) defaults to /[slug] */
       article.route = article.route || '/' + article.slug;
 
+      /* Load the plugins */
+      // TODO: not a great solution to giving articles access to the plugins
+      article.plugins = self.plugins;
+
       /* Render the article with the template and layout */
       article.render = self.renderPage({
         body: ejs.render(self.articleTemplate, article)
@@ -271,7 +277,11 @@ Tinman.prototype.renderArticle = function (file) {
  */
 Tinman.prototype.loadIndexPage = function (callback) {
   this.indexPage = this.renderPage({
-    body: ejs.render(this.indexTemplate, { articles: this.articles })
+    // TODO: We need a better way to have all the templates receive plugins
+    body: ejs.render(this.indexTemplate, {
+     articles: this.articles,
+     plugins: this.plugins
+    })
   });
 
   callback();

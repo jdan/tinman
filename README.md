@@ -168,11 +168,9 @@ has access to two strings, `stylesheets` and `scripts`, which store the CSS/JS
 resource tags generated automatically based on the contents of your public
 directory.
 
-*All* templates have access to the blog's **title** and **plugins**.
-
 ## Plugins
 
-Plugins are small helper modules that the templates can access, allowing
+Plugins are small helper modules that **all** templates can access, allowing
 you to add extra functionality to your blog. An example plugin may look
 like the following:
 
