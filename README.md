@@ -162,11 +162,64 @@ extra fields include:
 The **index template** has access to the array `articles`, which holds
 every article in your blog.
 
-The **layout template** receives the blog's title and a `body`, which
-contains the rendered HTML of the page it contains (either an article
-page or the index). This template also has access to two strings,
-`stylesheets` and `scripts`, which store the CSS/JS resource tags
-generated automatically based on the contents of your public directory.
+The **layout template** receives a `body`, which contains the rendered HTML of
+the page it contains (either an article page or the index). This template also
+has access to two strings, `stylesheets` and `scripts`, which store the CSS/JS
+resource tags generated automatically based on the contents of your public
+directory.
+
+*All* templates have access to the blog's **title** and **plugins**.
+
+## Plugins
+
+Plugins are small helper modules that the templates can access, allowing
+you to add extra functionality to your blog. An example plugin may look
+like the following:
+
+```javascript
+// hello.js
+module.exports = function (name) {
+  return "Hello, " + name + "!";
+};
+```
+
+Which you can then access in any template like so:
+
+```html
+<title><%= plugins.greeting("Jordan") %></title>
+```
+
+#### How do I load a plugin?
+
+In order for Tinman to appropriately load your plugins, you need to
+populate the `plugins` object in your `tinman.json` file. You'll notice
+this file is generated for you automatically when you create a new blog
+using the `--with-templates` option.
+
+```json
+{
+  "title": "Jordan's awesome blog",
+  "plugins": {
+    "greeting": "./hello"
+  }
+}
+```
+
+Each entry in `plugins` consists of two items, the identifier that your
+template will be able to call (i.e. `plugins.greeting`) and a require
+string (just as you would pass to `require()` in node).
+
+```javascript
+{
+  "plugins": {
+    "ms": "ms",         // load "ms" from node_modules/
+    "other": "./blah"   // load "blah.js" locally as "other"
+  }
+}
+```
+
+Just remember to `npm install` any external modules before trying to use
+them.
 
 ## Static Files
 
