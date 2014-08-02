@@ -108,3 +108,18 @@ footer {
   background-size: 128px 128px;
 }
 
+
+
+/* Some buttons */
+.github-button, .twitter-button {
+  position: fixed;
+  top: 20px;
+}
+
+.github-button {
+  left: 20px;
+}
+
+.twitter-button {
+  right: 20px;
+}
