@@ -1,0 +1,110 @@
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #222;
+  background-color: #ffffff;
+}
+
+h1 a:visited {
+  color: inherit;
+}
+
+h3 {
+  margin-top: 40px;
+  margin-bottom: 0;
+}
+
+hr {
+  margin: 0;
+  border: none;
+  height: 1px;
+  background-color: #ccc;
+}
+
+.main {
+  width: 860px;
+  padding: 30px;
+  margin: 40px auto 0;
+}
+
+.blog-title {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 40px;
+}
+
+h1 a, .article h1 a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.article {
+  margin: 50px 0;
+}
+
+.article h1 {
+  font-weight: 200;
+}
+
+.article a, footer a {
+  color: #9d261d;
+  text-decoration: none;
+}
+
+.article .content, footer {
+  font-family: "Alegreya", Palatino, Georgia, serif;
+  font-size: 20px;
+  line-height: 1.6;
+}
+
+.article .more {
+  font-size: 90%;
+}
+
+.article .date {
+  padding-top: 5px;
+  float: right;
+  color: #ccc;
+}
+
+pre code, code {
+  background-color: #eee;
+  font-size: 90%;
+}
+
+pre code {
+  display: block;
+  padding: 15px;
+}
+
+
+/* Header */
+
+.logo {
+  width: 400px;
+  margin: 0 auto;
+}
+
+.logo img {
+  width: 100%;
+}
+
+
+/* Footer */
+footer {
+  margin-top: 60px;
+  padding-top: 60px;
+  border-top: 1px solid #ccc;
+
+  text-align: center;
+}
+
+.avatar {
+  margin: 0 auto 40px;
+  width: 128px;
+  height: 128px;
+  border-radius:         50%;
+  -moz-border-radius:    50%;
+  -webkit-border-radius: 50%;
+  background: #eeeeee url('http://s.gravatar.com/avatar/3517596df161030c3779c532f7844383?s=256') no-repeat;
+  background-size: 128px 128px;
+}
+

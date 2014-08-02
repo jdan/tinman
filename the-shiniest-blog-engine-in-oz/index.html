@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+  <title>Tinman</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="main">
+    <div class="logo">
+      <a href="/">
+        <img alt="tinman logo" src="https://i.cloudup.com/ovFVGvqIQI.png">
+      </a>
+    </div>
+
+    <div class="article">
+  <div class="title">
+    
+      <div class="more date"><em>August 01, 2014</em></div>
+    
+    <h1>The Shiniest Blog Engine in Oz</h1>
+  </div>
+
+  <div class="content">
+    <p>Introducing <a href="http://github.com/jdan/tinman">Tinman</a>, the shiniest blog
+engine in Oz!</p>
+<h2 id="let-s-get-started">Let&#39;s get started</h2>
+<p>Tinman is a tiny static-ready blog engine based on the
+<a href="http://github.com/cloudhead/toto">toto</a> library.</p>
+<p>A basic tinman blog looks like this:</p>
+<pre><code>example
+├── articles
+│   └── 2014-08-01-the-shiniest-blog-engine-in-oz.md
+└── public
+    └── style.css
+</code></pre><p>You can grab a copy on npm:</p>
+<pre><code>npm install -g tinman
+</code></pre><p>You can also check out the source code, follow issues, and much more
+over on <a href="http://github.com/jdan/tinman">GitHub</a>.</p>
+<h2 id="usage">Usage</h2>
+<h4 id="create-a-new-blog">Create a new blog</h4>
+<pre><code class="lang-bash">$ tinman create
+Blog title: myblog
+
+  Your blog is ready! To get started:
+
+    cd myblog/
+    tinman server
+
+$ tinman create myblog
+
+# Generate example templates to play with as well
+$ tinman create myblog --with-templates
+</code></pre>
+<h4 id="generate-a-new-article">Generate a new article</h4>
+<pre><code class="lang-bash">$ tinman new
+Title: This is my first blog post
+
+  Article generated at: articles/2014-07-05-this-is-my-first-blog-post.md
+</code></pre>
+<h4 id="run-your-blog-on-a-local-webserver">Run your blog on a local webserver</h4>
+<pre><code class="lang-bash">$ tinman server
+Server listening on port 3000...
+
+$ tinman server --port 1337
+Server listening on port 1337...
+</code></pre>
+<h4 id="build-your-blog-as-a-static-site">Build your blog as a static site</h4>
+<pre><code class="lang-bash">$ tinman build
+
+  Blog successfully built to: build/
+
+$ tinman build --output-dir www
+
+  Blog successfully built to: www
+</code></pre>
+<h2 id="why-">Why?</h2>
+<p>Blogging is weird. Sometimes we run entire web servers just to host a couple
+words. That&#39;s odd, but sometimes it&#39;s necessary, Tinman gets that.</p>
+<p>Other times we use industrial-grade static site generators to spit out a
+few files. These tools are really awesome for some things, but they get
+in the way for others.</p>
+<p>Tinman isn&#39;t like that. Tinman is small, simple, and opinionated.</p>
+<h2 id="writing-articles">Writing Articles</h2>
+<p>Articles are written in <a href="http://daringfireball.net/projects/markdown/">Markdown</a>
+and use YAML Front Matter to set various options.</p>
+<pre><code class="lang-markdown">---
+title: Hello, World!
+date: 2014-06-22
+---
+
+Once upon a time...
+</code></pre>
+<h2 id="extra-customization">Extra customization</h2>
+<p>If you&#39;re feeling the need to customize your blog further, you can edit
+the default templates that Tinman uses. Just add the <code>--with-templates</code>
+option when calling <code>tinman create</code>.</p>
+<p>Tinman also supports the notion of &quot;plugins,&quot; which are just simple
+helper functions you can call from your templates.</p>
+<p>There&#39;s some more about this <a href="https://github.com/jdan/tinman#templates">on GitHub</a>.</p>
+<h2 id="static-files">Static Files</h2>
+<p>Tinman will automatically copy static assets (images, stylesheets,
+javascripts) from the &quot;public&quot; directory (default: <code>public/</code>). It
+doesn&#39;t need to be any more difficult than that.</p>
+<p>You can throw images in there, audio files, even complete HTML
+documents.</p>
+<p>Even cooler, any JS or CSS you throw in there will be <em>automatically</em>
+inserted into your main layout with Tinman.</p>
+<h2 id="what-else-">What else?</h2>
+<p>Not much! Tinman&#39;s pretty simple. It takes the same &quot;10 second blog
+engine for hackers&quot; spirit behind <a href="http://github.com/cloudhead/toto">toto</a> and
+adds a couple nifty features.</p>
+<p>Be sure to check us out on <a href="http://github.com/jdan/tinman">GitHub</a>.</p>
+
+  </div>
+
+  <div class="more">
+    <a href="/">&laquo; home</a>
+  </div>
+</div>
+
+
+    <footer>
+      <div class="avatar"></div>
+      <div>
+        My name is
+        <a href="http://twitter.com/jdan">@jdan</a>
+        and I made Tinman for you because you seem really nice.
+      </div>
+    </footer>
+  </div>
+
+  
+</body>
+</html>
