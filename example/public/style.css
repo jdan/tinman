@@ -44,7 +44,7 @@ h1 a, .article h1 a {
   font-weight: 200;
 }
 
-.article a, .article a {
+.article a, .article a:visited {
   color: #9d261d;
   text-decoration: none;
 }
