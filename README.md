@@ -1,7 +1,8 @@
 ![logo](https://i.cloudup.com/ovFVGvqIQI.png)
 
 A tiny static-ready blog engine based on the
-[toto](http://github.com/cloudhead/toto) library.
+[toto](http://github.com/cloudhead/toto) library. [The shiniest blog
+engine in Oz!](http://jdan.github.io/tinman/the-shiniest-blog-engine-in-oz/)
 
 ```
 npm install -g tinman
