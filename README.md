@@ -1,6 +1,6 @@
 ![logo](https://i.cloudup.com/ovFVGvqIQI.png)
 
-A tiny static-ready blog engine based on the
+A tiny static-ready blog engine inspired by the
 [toto](http://github.com/cloudhead/toto) library. [The shiniest blog
 engine in Oz!](http://jdan.github.io/tinman/the-shiniest-blog-engine-in-oz/)
 

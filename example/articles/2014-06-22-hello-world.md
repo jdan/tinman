@@ -2,7 +2,7 @@
 title: Hello, World!
 ---
 
-Tinman is a tiny static-ready blog engine based on the
+Tinman is a tiny static-ready blog engine inspired by the
 [toto](http://github.com/cloudhead/toto) library.
 
 ![logo](https://i.cloudup.com/ovFVGvqIQI.png)
